@@ -79,33 +79,35 @@ export default function LessonPage() {
 
   const handleCorrect = () => {
     const currentWord = words[currentCardIndex]
-    setCardStats(prev => ({
-      ...prev,
+    const newStats = {
+      ...cardStats,
       [currentWord.id]: true // true = correct
-    }))
-    nextCard()
+    }
+    setCardStats(newStats)
+    nextCard(currentCardIndex, newStats)
   }
 
   const handleIncorrect = () => {
     const currentWord = words[currentCardIndex]
-    setCardStats(prev => ({
-      ...prev,
+    const newStats = {
+      ...cardStats,
       [currentWord.id]: false // false = incorrect
-    }))
-    nextCard()
+    }
+    setCardStats(newStats)
+    nextCard(currentCardIndex, newStats)
   }
 
-  const nextCard = () => {
-    if (currentCardIndex < words.length - 1) {
-      setCurrentCardIndex(currentCardIndex + 1)
+  const nextCard = (currentIndex: number = currentCardIndex, stats: Record<string, boolean> = cardStats) => {
+    if (currentIndex < words.length - 1) {
+      setCurrentCardIndex(currentIndex + 1)
     } else {
-      finishLesson()
+      finishLesson(stats)
     }
   }
 
-  const finishLesson = () => {
-    const correctCount = Object.values(cardStats).filter(result => result === true).length
-    const incorrectCount = Object.values(cardStats).filter(result => result === false).length
+  const finishLesson = (stats: Record<string, boolean> = cardStats) => {
+    const correctCount = Object.values(stats).filter(result => result === true).length
+    const incorrectCount = Object.values(stats).filter(result => result === false).length
     const totalAttempts = correctCount + incorrectCount
     const accuracy = totalAttempts > 0 
       ? (correctCount / totalAttempts) * 100 
