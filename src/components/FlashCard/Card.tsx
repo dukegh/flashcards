@@ -28,7 +28,7 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
       {/* Card */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="cursor-pointer perspective mb-3"
+        className="cursor-pointer perspective mb-2"
       >
         <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner">
