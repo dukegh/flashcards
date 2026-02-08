@@ -4,7 +4,6 @@ import { LessonStats, Word } from '@/types'
 
 interface ResultsProps {
   stats: LessonStats
-  totalWords: number
   incorrectWords: Word[]
   onRetry: () => void
   onRepeatIncorrect: () => void
@@ -13,7 +12,6 @@ interface ResultsProps {
 
 export default function Results({
   stats,
-  totalWords,
   incorrectWords,
   onRetry,
   onRepeatIncorrect,
