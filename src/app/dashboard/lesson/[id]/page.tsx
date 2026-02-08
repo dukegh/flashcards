@@ -180,6 +180,20 @@ export default function LessonPage() {
                 <p className="text-2xl font-bold">
                   {currentCardIndex + 1} / {words.length}
                 </p>
+                <div className="mt-3 flex gap-4 justify-center text-sm">
+                  <div>
+                    <span className="opacity-75">✓ Вірно:</span>
+                    <span className="ml-2 font-semibold text-green-300">
+                      {Object.values(cardStats).filter(v => v === true).length}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="opacity-75">✗ Помилок:</span>
+                    <span className="ml-2 font-semibold text-red-300">
+                      {Object.values(cardStats).filter(v => v === false).length}
+                    </span>
+                  </div>
+                </div>
               </div>
               <div></div>
             </div>
