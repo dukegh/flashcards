@@ -163,47 +163,51 @@ export default function LessonPage() {
       )}
 
       {view === 'learning' && (
-        <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="flex justify-between items-center mb-8 text-white">
+        <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4 flex flex-col">
+          <div className="max-w-2xl mx-auto w-full flex flex-col flex-1">
+            <div className="flex justify-between items-center mb-4 text-white">
               <button
                 onClick={() => {
                   setView('setup')
                   setCurrentCardIndex(0)
                 }}
-                className="hover:text-gray-200"
+                className="hover:text-gray-200 text-sm"
               >
                 ← Назад
               </button>
               <div className="text-center">
-                <p className="text-sm opacity-75">Прогрес</p>
-                <p className="text-2xl font-bold">
-                  {currentCardIndex + 1} / {words.length}
-                </p>
-                <div className="mt-3 flex gap-4 justify-center text-sm">
+                <div className="flex gap-6 justify-center text-xs">
                   <div>
-                    <span className="opacity-75">✓ Вірно:</span>
-                    <span className="ml-2 font-semibold text-green-300">
+                    <span className="opacity-75">Прогрес:</span>
+                    <span className="ml-2 font-bold text-lg">
+                      {currentCardIndex + 1}/{words.length}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="opacity-75">✓</span>
+                    <span className="ml-1 font-semibold text-green-300">
                       {Object.values(cardStats).filter(v => v === true).length}
                     </span>
                   </div>
                   <div>
-                    <span className="opacity-75">✗ Помилок:</span>
-                    <span className="ml-2 font-semibold text-red-300">
+                    <span className="opacity-75">✗</span>
+                    <span className="ml-1 font-semibold text-red-300">
                       {Object.values(cardStats).filter(v => v === false).length}
                     </span>
                   </div>
                 </div>
               </div>
-              <div></div>
+              <div className="w-12"></div>
             </div>
 
-            <Card
-              word={words[currentCardIndex]}
-              isJapaneseFirst={isJapaneseFirst}
-              onCorrect={handleCorrect}
-              onIncorrect={handleIncorrect}
-            />
+            <div className="flex-1 flex items-center justify-center">
+              <Card
+                word={words[currentCardIndex]}
+                isJapaneseFirst={isJapaneseFirst}
+                onCorrect={handleCorrect}
+                onIncorrect={handleIncorrect}
+              />
+            </div>
           </div>
         </div>
       )}
