@@ -75,12 +75,29 @@ export default function Dashboard() {
   const handleDeleteLesson = async (lessonId: string) => {
     setIsDeleting(true)
     try {
+      // Get current session/token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (!session) {
+        throw new Error('Not authenticated')
+      }
+
       const response = await fetch(`/api/lessons/${lessonId}`, {
         method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json',
+        },
       })
 
+      const responseData = await response.json()
+      console.log('Delete response:', { status: response.status, data: responseData })
+
       if (!response.ok) {
-        throw new Error('Failed to delete lesson')
+        const errorMsg = responseData?.error || 'Failed to delete lesson'
+        throw new Error(errorMsg)
       }
 
       // Remove from local state

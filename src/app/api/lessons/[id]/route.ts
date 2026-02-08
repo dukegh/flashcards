@@ -6,15 +6,17 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    // Get auth token from cookies
-    const authToken = request.cookies.get('sb-auth-token')?.value
+    // Get auth token from Authorization header
+    const authHeader = request.headers.get('Authorization')
     
-    if (!authToken) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
         { error: 'Unauthorized - no auth token' },
         { status: 401 }
       )
     }
+
+    const authToken = authHeader.substring(7) // Remove 'Bearer ' prefix
 
     // Create server client
     const serverClient = createClient(
