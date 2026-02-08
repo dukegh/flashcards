@@ -28,41 +28,41 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
       {/* Card */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="cursor-pointer perspective mb-8"
+        className="cursor-pointer perspective mb-6"
       >
         <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner">
             <div className="flip-card-front">
               <div className="text-center">
-                <p className="text-sm opacity-75 mb-4">{frontLabel}</p>
-                <p className="text-4xl font-bold">{front}</p>
+                <p className="text-xs md:text-sm opacity-75 mb-2 md:mb-4">{frontLabel}</p>
+                <p className="text-2xl md:text-4xl font-bold">{front}</p>
               </div>
             </div>
             <div className="flip-card-back">
               <div className="text-center">
-                <p className="text-sm opacity-75 mb-4">{backLabel}</p>
-                <p className="text-4xl font-bold">{back}</p>
+                <p className="text-xs md:text-sm opacity-75 mb-2 md:mb-4">{backLabel}</p>
+                <p className="text-2xl md:text-4xl font-bold">{back}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <p className="text-center text-white text-sm mb-8 opacity-75">
+      <p className="text-center text-white text-xs md:text-sm mb-6 opacity-75">
         Натисніть на карточку щоб перевернути
       </p>
 
       {/* Buttons */}
-      <div className="flex gap-4 justify-center">
+      <div className="flex gap-3 justify-center">
         <button
           onClick={onIncorrect}
-          className="btn-danger flex-1 max-w-xs"
+          className="btn-danger flex-1 max-w-xs text-sm md:text-base py-2 md:py-3"
         >
           ❌ Помилка
         </button>
         <button
           onClick={onCorrect}
-          className="btn-success flex-1 max-w-xs"
+          className="btn-success flex-1 max-w-xs text-sm md:text-base py-2 md:py-3"
         >
           ✅ Вірно
         </button>
