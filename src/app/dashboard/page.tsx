@@ -37,7 +37,10 @@ export default function Dashboard() {
 
       const { data, error } = await supabase
         .from('lessons')
-        .select('*')
+        .select(`
+          *,
+          words:words(id)
+        `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
@@ -119,6 +122,9 @@ export default function Dashboard() {
                   <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">
                     {lesson.language_to === 'japanese' ? '日本語' : 'Українська'}
                   </span>
+                </div>
+                <div className="text-sm text-gray-500 mb-4">
+                  📇 Карток: {(lesson.words as any)?.length || 0}
                 </div>
                 <div className="flex gap-2">
                   <button

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Word } from '@/types'
 
 interface CardProps {
@@ -12,6 +12,11 @@ interface CardProps {
 
 export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: CardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
+
+  // Reset flip state when word changes
+  useEffect(() => {
+    setIsFlipped(false)
+  }, [word.id])
 
   const front = isJapaneseFirst ? word.japanese : word.ukrainian
   const back = isJapaneseFirst ? word.ukrainian : word.japanese
