@@ -28,27 +28,27 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
       {/* Card */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="cursor-pointer perspective mb-6"
+        className="cursor-pointer perspective mb-4"
       >
         <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner">
             <div className="flip-card-front">
               <div className="text-center">
                 <p className="text-sm opacity-75 mb-4">{frontLabel}</p>
-                <p className="text-3xl md:text-4xl font-bold">{front}</p>
+                <p className="text-4xl font-bold">{front}</p>
               </div>
             </div>
             <div className="flip-card-back">
               <div className="text-center">
                 <p className="text-sm opacity-75 mb-4">{backLabel}</p>
-                <p className="text-3xl md:text-4xl font-bold">{back}</p>
+                <p className="text-4xl font-bold">{back}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <p className="text-center text-white text-sm mb-6 opacity-75">
+      <p className="text-center text-white text-sm mb-4 opacity-75">
         Натисніть на карточку щоб перевернути
       </p>
 
