@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "add-words": "node scripts/add-words.js"
+    "add-words": "node scripts/add-words.js",
+    "import-csv": "node scripts/import-csv.js"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.8.0",
