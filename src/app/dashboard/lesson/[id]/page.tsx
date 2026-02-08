@@ -113,10 +113,6 @@ export default function LessonPage() {
 
     const duration = Math.round((Date.now() - startTime) / 1000)
 
-    const incorrectWords = words.filter(word => 
-      cardStats[word.id] === false
-    )
-
     setStats({
       totalCards: words.length,
       correctAnswers: correctCount,
@@ -199,11 +195,10 @@ export default function LessonPage() {
       {view === 'results' && stats && (
         <Results
           stats={stats}
-          totalWords={words.length}
-          incorrectWords={words.filter(word => cardStats[word.id]?.incorrect > 0)}
+          incorrectWords={words.filter(word => cardStats[word.id] === false)}
           onRetry={() => handleStartLesson({ isJapaneseFirst, isRandom })}
           onRepeatIncorrect={() => {
-            const incorrectWords = words.filter(word => cardStats[word.id]?.incorrect > 0)
+            const incorrectWords = words.filter(word => cardStats[word.id] === false)
             setWords(incorrectWords)
             setCardStats({})
             setCurrentCardIndex(0)
