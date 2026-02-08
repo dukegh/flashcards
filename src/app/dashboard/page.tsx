@@ -10,6 +10,8 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [wordCounts, setWordCounts] = useState<Record<string, number>>({})
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -68,6 +70,29 @@ export default function Dashboard() {
   const handleLogout = async () => {
     await supabase.auth.signOut()
     router.push('/')
+  }
+
+  const handleDeleteLesson = async (lessonId: string) => {
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/lessons/${lessonId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete lesson')
+      }
+
+      // Remove from local state
+      setLessons(lessons.filter(l => l.id !== lessonId))
+      setDeleteConfirmId(null)
+      alert('Урок видалено')
+    } catch (error: any) {
+      console.error('Error deleting lesson:', error)
+      alert(`Помилка: ${error.message}`)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   if (isLoading) {
@@ -151,9 +176,46 @@ export default function Dashboard() {
                   >
                     Редагувати
                   </button>
+                  <button
+                    onClick={() => setDeleteConfirmId(lesson.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded text-sm"
+                    title="Видалити урок"
+                  >
+                    🗑️
+                  </button>
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Delete Confirmation Modal */}
+        {deleteConfirmId && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-lg shadow-lg max-w-sm mx-auto p-6">
+              <h2 className="text-2xl font-bold mb-4 text-gray-800">
+                Видалити урок?
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Це видалить урок та всі картки в ньому. Цю дію неможливо повернути.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  disabled={isDeleting}
+                  className="btn-secondary flex-1 py-2"
+                >
+                  Скасувати
+                </button>
+                <button
+                  onClick={() => handleDeleteLesson(deleteConfirmId)}
+                  disabled={isDeleting}
+                  className="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white font-bold py-2 px-4 rounded flex-1"
+                >
+                  {isDeleting ? 'Видалення...' : '🗑️ Видалити'}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
