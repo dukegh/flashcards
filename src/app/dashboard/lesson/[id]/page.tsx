@@ -165,7 +165,7 @@ export default function LessonPage() {
       {view === 'learning' && (
         <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4 flex flex-col">
           <div className="max-w-2xl mx-auto w-full flex flex-col flex-1">
-            <div className="flex justify-between items-center mb-2 text-white">
+            <div className="flex justify-between items-center mb-1 text-white">
               <button
                 onClick={() => {
                   setView('setup')
@@ -200,7 +200,7 @@ export default function LessonPage() {
               <div className="w-12"></div>
             </div>
 
-            <div className="flex-1 flex items-center justify-center">
+            <div>
               <Card
                 word={words[currentCardIndex]}
                 isJapaneseFirst={isJapaneseFirst}

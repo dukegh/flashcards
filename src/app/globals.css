@@ -45,7 +45,7 @@ body {
 .flip-card {
   background-color: transparent;
   width: min(90vw, 350px);
-  height: min(45vh, 350px);
+  height: min(50vh, 400px);
   perspective: 1000px;
   margin: 0 auto;
 }
