@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase'
+import { createClient as createBrowserClient } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function DELETE(
@@ -6,13 +7,12 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createClient()
-    
-    // Get current user
+    // Get current user via browser client
+    const browserClient = createBrowserClient()
     const {
       data: { user },
       error: userError,
-    } = await supabase.auth.getUser()
+    } = await browserClient.auth.getUser()
 
     if (userError || !user) {
       return NextResponse.json(
@@ -21,10 +21,16 @@ export async function DELETE(
       )
     }
 
+    // Use server client for delete operations
+    const serverClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
     const lessonId = params.id
 
-    // Verify lesson belongs to user (RLS will enforce, but check here too)
-    const { data: lesson, error: lessonError } = await supabase
+    // Verify lesson belongs to user
+    const { data: lesson, error: lessonError } = await serverClient
       .from('lessons')
       .select('id')
       .eq('id', lessonId)
@@ -38,25 +44,27 @@ export async function DELETE(
       )
     }
 
-    // Delete all words in lesson (cascade delete handled by DB)
-    const { error: deleteWordsError } = await supabase
+    // Delete all words in lesson first
+    const { error: deleteWordsError } = await serverClient
       .from('words')
       .delete()
       .eq('lesson_id', lessonId)
 
     if (deleteWordsError) {
-      throw deleteWordsError
+      console.error('Error deleting words:', deleteWordsError)
+      throw new Error(`Failed to delete words: ${deleteWordsError.message}`)
     }
 
     // Delete the lesson
-    const { error: deleteLessonError } = await supabase
+    const { error: deleteLessonError } = await serverClient
       .from('lessons')
       .delete()
       .eq('id', lessonId)
       .eq('user_id', user.id)
 
     if (deleteLessonError) {
-      throw deleteLessonError
+      console.error('Error deleting lesson:', deleteLessonError)
+      throw new Error(`Failed to delete lesson: ${deleteLessonError.message}`)
     }
 
     return NextResponse.json(
@@ -64,7 +72,7 @@ export async function DELETE(
       { status: 200 }
     )
   } catch (error: any) {
-    console.error('Delete lesson error:', error)
+    console.error('Delete lesson error:', error.message || error)
     return NextResponse.json(
       { error: error.message || 'Failed to delete lesson' },
       { status: 500 }
