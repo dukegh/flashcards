@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
@@ -10,8 +10,29 @@ export default function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSignUp, setIsSignUp] = useState(false)
+  const [registrationEnabled, setRegistrationEnabled] = useState(true)
+  const [settingsLoading, setSettingsLoading] = useState(true)
   const router = useRouter()
   const supabase = createClient()
+
+  // Load app settings
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch('/api/settings')
+        if (response.ok) {
+          const settings = await response.json()
+          setRegistrationEnabled(settings.registration_enabled !== false)
+        }
+      } catch (err) {
+        console.error('Failed to load settings:', err)
+      } finally {
+        setSettingsLoading(false)
+      }
+    }
+
+    loadSettings()
+  }, [])
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,6 +86,12 @@ export default function AuthForm() {
           </div>
         )}
 
+        {isSignUp && !registrationEnabled && (
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+            Реєстрація наразі недоступна. Спробуйте пізніше або зв'яжіться з адміністратором.
+          </div>
+        )}
+
         <form onSubmit={handleAuth} className="space-y-4">
           <div>
             <label className="block text-gray-700 font-semibold mb-2">
@@ -96,10 +123,10 @@ export default function AuthForm() {
 
           <button
             type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full"
+            disabled={isLoading || settingsLoading || (isSignUp && !registrationEnabled)}
+            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Завантаження...' : isSignUp ? 'Зареєструватися' : 'Увійти'}
+            {isLoading ? 'Завантаження...' : settingsLoading ? 'Завантаження...' : isSignUp ? 'Зареєструватися' : 'Увійти'}
           </button>
         </form>
 
@@ -109,11 +136,12 @@ export default function AuthForm() {
               setIsSignUp(!isSignUp)
               setError(null)
             }}
-            className="text-blue-600 hover:text-blue-800 font-semibold"
+            disabled={!isSignUp && !registrationEnabled}
+            className="text-blue-600 hover:text-blue-800 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSignUp
               ? 'Вже маєте аккаунт? Увійти'
-              : "Немаєте аккаунту? Зареєструватися"}
+              : !registrationEnabled ? "Реєстрація наразі недоступна" : "Немаєте аккаунту? Зареєструватися"}
           </button>
         </div>
       </div>
