@@ -9,6 +9,7 @@ export default function Dashboard() {
   const [lessons, setLessons] = useState<Lesson[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
+  const [wordCounts, setWordCounts] = useState<Record<string, number>>({})
   const router = useRouter()
   const supabase = createClient()
 
@@ -37,15 +38,26 @@ export default function Dashboard() {
 
       const { data, error } = await supabase
         .from('lessons')
-        .select(`
-          *,
-          words:words(id)
-        `)
+        .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
 
       if (error) throw error
       setLessons(data || [])
+
+      // Load word counts for each lesson
+      const counts: Record<string, number> = {}
+      for (const lesson of data || []) {
+        const { count, error: countError } = await supabase
+          .from('words')
+          .select('*', { count: 'exact', head: true })
+          .eq('lesson_id', lesson.id)
+
+        if (!countError && count !== null) {
+          counts[lesson.id] = count
+        }
+      }
+      setWordCounts(counts)
     } catch (error) {
       console.error('Error loading lessons:', error)
     } finally {
@@ -124,7 +136,7 @@ export default function Dashboard() {
                   </span>
                 </div>
                 <div className="text-sm text-gray-500 mb-4">
-                  📇 Карток: {(lesson.words as any)?.length || 0}
+                  📇 Карток: {wordCounts[lesson.id] || 0}
                 </div>
                 <div className="flex gap-2">
                   <button
