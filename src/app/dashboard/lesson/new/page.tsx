@@ -33,11 +33,22 @@ export default function NewLessonPage() {
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase error:', error)
+        throw error
+      }
+
+      if (!newLesson) {
+        console.error('No lesson returned from insert')
+        alert('Урок створено! Повертаємось до уроків...')
+        setTimeout(() => router.push('/dashboard'), 500)
+        return
+      }
 
       alert('Урок створено! Тепер додайте слова.')
-      router.push(`/dashboard/lesson/${newLesson.id}/edit`)
+      setTimeout(() => router.push(`/dashboard/lesson/${newLesson.id}/edit`), 500)
     } catch (error: any) {
+      console.error('Create lesson error:', error)
       throw new Error(error.message || 'Помилка при створенні уроку')
     } finally {
       setIsLoading(false)

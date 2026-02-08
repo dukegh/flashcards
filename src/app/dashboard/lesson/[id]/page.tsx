@@ -22,7 +22,7 @@ export default function LessonPage() {
   const [isJapaneseFirst, setIsJapaneseFirst] = useState(true)
   const [isRandom, setIsRandom] = useState(false)
   const [stats, setStats] = useState<LessonStats | null>(null)
-  const [cardStats, setCardStats] = useState<Record<string, { correct: number; incorrect: number }>>({})
+  const [cardStats, setCardStats] = useState<Record<string, boolean>>({})
   const [startTime, setStartTime] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -81,10 +81,7 @@ export default function LessonPage() {
     const currentWord = words[currentCardIndex]
     setCardStats(prev => ({
       ...prev,
-      [currentWord.id]: {
-        correct: (prev[currentWord.id]?.correct || 0) + 1,
-        incorrect: prev[currentWord.id]?.incorrect || 0,
-      }
+      [currentWord.id]: true // true = correct
     }))
     nextCard()
   }
@@ -93,10 +90,7 @@ export default function LessonPage() {
     const currentWord = words[currentCardIndex]
     setCardStats(prev => ({
       ...prev,
-      [currentWord.id]: {
-        correct: prev[currentWord.id]?.correct || 0,
-        incorrect: (prev[currentWord.id]?.incorrect || 0) + 1,
-      }
+      [currentWord.id]: false // false = incorrect
     }))
     nextCard()
   }
@@ -110,16 +104,17 @@ export default function LessonPage() {
   }
 
   const finishLesson = () => {
-    const correctCount = Object.values(cardStats).reduce((sum, stat) => sum + stat.correct, 0)
-    const incorrectCount = Object.values(cardStats).reduce((sum, stat) => sum + stat.incorrect, 0)
-    const accuracy = correctCount + incorrectCount > 0 
-      ? (correctCount / (correctCount + incorrectCount)) * 100 
+    const correctCount = Object.values(cardStats).filter(result => result === true).length
+    const incorrectCount = Object.values(cardStats).filter(result => result === false).length
+    const totalAttempts = correctCount + incorrectCount
+    const accuracy = totalAttempts > 0 
+      ? (correctCount / totalAttempts) * 100 
       : 0
 
     const duration = Math.round((Date.now() - startTime) / 1000)
 
     const incorrectWords = words.filter(word => 
-      cardStats[word.id]?.incorrect > 0
+      cardStats[word.id] === false
     )
 
     setStats({
