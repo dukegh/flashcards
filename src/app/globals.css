@@ -35,19 +35,33 @@ body {
 }
 
 .btn-danger {
-  @apply bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition;
+  @apply bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg transition text-sm;
 }
 
 .btn-success {
-  @apply bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition;
+  @apply bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg transition text-sm;
+}
+
+@media (min-height: 800px) {
+  .btn-danger,
+  .btn-success {
+    @apply py-2 px-4 text-base;
+  }
 }
 
 .flip-card {
   background-color: transparent;
   width: min(90vw, 350px);
-  height: min(52vh, 420px);
+  height: min(48vh, 380px);
   perspective: 1000px;
   margin: 0 auto;
+}
+
+/* Mobile optimization */
+@media (max-height: 700px) {
+  .flip-card {
+    height: min(42vh, 300px);
+  }
 }
 
 .flip-card-inner {

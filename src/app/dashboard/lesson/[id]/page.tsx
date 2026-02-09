@@ -163,9 +163,9 @@ export default function LessonPage() {
       )}
 
       {view === 'learning' && (
-        <div className="h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4 flex flex-col overflow-hidden">
+        <div className="h-screen bg-gradient-to-br from-blue-500 to-purple-600 px-4 py-2 flex flex-col overflow-hidden">
           <div className="max-w-2xl mx-auto w-full flex flex-col flex-1 overflow-hidden">
-            <div className="flex justify-between items-center mb-3 text-white">
+            <div className="flex justify-between items-center mb-2 text-white">
               <button
                 onClick={() => {
                   setView('setup')
@@ -176,7 +176,7 @@ export default function LessonPage() {
                 ← Назад
               </button>
               <div className="text-center">
-                <div className="flex gap-4 justify-center text-xs">
+                <div className="flex gap-2 justify-center text-xs">
                   <div>
                     <span className="opacity-75 text-sm">Прогрес:</span>
                     <span className="ml-2 font-bold text-base">
