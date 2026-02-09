@@ -163,51 +163,51 @@ export default function LessonPage() {
       )}
 
       {view === 'learning' && (
-        <div className="h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex flex-col overflow-hidden">
-          {/* Header - Fixed Height */}
-          <div className="flex justify-between items-center px-3 py-1 text-white flex-shrink-0">
-            <button
-              onClick={() => {
-                setView('setup')
-                setCurrentCardIndex(0)
-              }}
-              className="hover:text-gray-200 text-sm"
-            >
-              ← Назад
-            </button>
-            <div className="text-center">
-              <div className="flex gap-2 justify-center text-xs">
-                <div>
-                  <span className="opacity-75 text-xs">Прогрес:</span>
-                  <span className="ml-1 font-bold text-sm">
-                    {currentCardIndex + 1}/{words.length}
-                  </span>
-                </div>
-                <div>
-                  <span className="opacity-75">✓</span>
-                  <span className="ml-1 font-semibold text-green-300 text-xs">
-                    {Object.values(cardStats).filter(v => v === true).length}
-                  </span>
-                </div>
-                <div>
-                  <span className="opacity-75">✗</span>
-                  <span className="ml-1 font-semibold text-red-300 text-xs">
-                    {Object.values(cardStats).filter(v => v === false).length}
-                  </span>
+        <div className="h-screen bg-gradient-to-br from-blue-500 to-purple-600 px-4 py-2 flex flex-col overflow-hidden">
+          <div className="max-w-2xl mx-auto w-full flex flex-col flex-1 overflow-hidden">
+            <div className="flex justify-between items-center mb-2 text-white">
+              <button
+                onClick={() => {
+                  setView('setup')
+                  setCurrentCardIndex(0)
+                }}
+                className="hover:text-gray-200 text-sm"
+              >
+                ← Назад
+              </button>
+              <div className="text-center">
+                <div className="flex gap-2 justify-center text-xs">
+                  <div>
+                    <span className="opacity-75 text-sm">Прогрес:</span>
+                    <span className="ml-2 font-bold text-base">
+                      {currentCardIndex + 1}/{words.length}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="opacity-75">✓</span>
+                    <span className="ml-1 font-semibold text-green-300">
+                      {Object.values(cardStats).filter(v => v === true).length}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="opacity-75">✗</span>
+                    <span className="ml-1 font-semibold text-red-300">
+                      {Object.values(cardStats).filter(v => v === false).length}
+                    </span>
+                  </div>
                 </div>
               </div>
+              <div className="w-12"></div>
             </div>
-            <div className="w-10"></div>
-          </div>
 
-          {/* Content Area - Takes Remaining Space */}
-          <div className="flex-1 flex flex-col items-center justify-center px-3 overflow-hidden">
-            <Card
-              word={words[currentCardIndex]}
-              isJapaneseFirst={isJapaneseFirst}
-              onCorrect={handleCorrect}
-              onIncorrect={handleIncorrect}
-            />
+            <div>
+              <Card
+                word={words[currentCardIndex]}
+                isJapaneseFirst={isJapaneseFirst}
+                onCorrect={handleCorrect}
+                onIncorrect={handleIncorrect}
+              />
+            </div>
           </div>
         </div>
       )}

@@ -35,11 +35,11 @@ body {
 }
 
 .btn-danger {
-  @apply bg-red-500 hover:bg-red-600 text-white font-bold py-1.5 px-3 rounded-lg transition text-sm;
+  @apply bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-lg transition text-sm;
 }
 
 .btn-success {
-  @apply bg-green-500 hover:bg-green-600 text-white font-bold py-1.5 px-3 rounded-lg transition text-sm;
+  @apply bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg transition text-sm;
 }
 
 @media (min-height: 800px) {
@@ -51,16 +51,16 @@ body {
 
 .flip-card {
   background-color: transparent;
-  width: min(90vw, 340px);
-  height: min(38vh, 300px);
+  width: min(90vw, 350px);
+  height: min(48vh, 380px);
   perspective: 1000px;
   margin: 0 auto;
 }
 
-/* Ultra-compact for small screens */
+/* Mobile optimization */
 @media (max-height: 700px) {
   .flip-card {
-    height: min(35vh, 260px);
+    height: min(42vh, 300px);
   }
 }
 
@@ -86,7 +86,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 16px;
   border-radius: 10px;
   font-size: 24px;
   font-weight: bold;
