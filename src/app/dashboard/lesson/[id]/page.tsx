@@ -163,8 +163,8 @@ export default function LessonPage() {
       )}
 
       {view === 'learning' && (
-        <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4 flex flex-col">
-          <div className="max-w-2xl mx-auto w-full flex flex-col flex-1">
+        <div className="h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4 flex flex-col overflow-hidden">
+          <div className="max-w-2xl mx-auto w-full flex flex-col flex-1 overflow-hidden">
             <div className="flex justify-between items-center mb-3 text-white">
               <button
                 onClick={() => {
