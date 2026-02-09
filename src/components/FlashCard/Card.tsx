@@ -24,32 +24,32 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
   const backLabel = isJapaneseFirst ? 'Українська' : '日本語'
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-sm flex flex-col items-center">
       {/* Card */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="cursor-pointer perspective mb-1"
+        className="cursor-pointer perspective"
       >
         <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner">
             <div className="flip-card-front">
               <div className="text-center">
-                <p className="text-sm opacity-75 mb-4">{frontLabel}</p>
-                <p className="text-4xl font-bold">{front}</p>
+                <p className="text-xs opacity-75 mb-2">{frontLabel}</p>
+                <p className="text-2xl md:text-4xl font-bold">{front}</p>
               </div>
             </div>
             <div className="flip-card-back">
               <div className="text-center">
-                <p className="text-sm opacity-75 mb-4">{backLabel}</p>
-                <p className="text-4xl font-bold">{back}</p>
+                <p className="text-xs opacity-75 mb-2">{backLabel}</p>
+                <p className="text-2xl md:text-4xl font-bold">{back}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <p className="text-center text-white text-sm mb-2 opacity-75">
-        Натисніть на карточку щоб перевернути
+      <p className="text-center text-white text-xs mb-2 opacity-75">
+        Натисніть щоб перевернути
       </p>
 
       {/* Buttons */}
