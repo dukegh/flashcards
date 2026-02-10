@@ -24,11 +24,11 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
   const backLabel = isJapaneseFirst ? 'Українська' : '日本語'
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto flex flex-col flex-1">
       {/* Card */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="cursor-pointer perspective mb-1"
+        className="cursor-pointer perspective flex-1 flex flex-col"
       >
         <div className={`flip-card ${isFlipped ? 'flipped' : ''}`}>
           <div className="flip-card-inner">
@@ -48,12 +48,12 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
         </div>
       </div>
 
-      <p className="text-center text-white text-sm mb-2 opacity-75">
+      <p className="text-center text-white text-sm mb-2 opacity-75 flex-shrink-0">
         Натисніть на карточку щоб перевернути
       </p>
 
       {/* Buttons */}
-      <div className="flex gap-3 justify-center">
+      <div className="flex gap-3 justify-center flex-shrink-0">
         <button
           onClick={onIncorrect}
           className="btn-danger flex-1 max-w-xs"

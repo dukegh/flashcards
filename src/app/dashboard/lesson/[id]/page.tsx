@@ -200,7 +200,7 @@ export default function LessonPage() {
               <div className="w-12"></div>
             </div>
 
-            <div>
+            <div className="flex-1 flex flex-col">
               <Card
                 word={words[currentCardIndex]}
                 isJapaneseFirst={isJapaneseFirst}
