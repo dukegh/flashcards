@@ -51,7 +51,7 @@ export default function WordForm({
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-gray-700 font-semibold mb-2">
             Японське слово
@@ -81,7 +81,7 @@ export default function WordForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-gray-700 font-semibold mb-2">
             Фуригана (необов'язково)
