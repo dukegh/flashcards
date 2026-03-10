@@ -27,62 +27,65 @@ export default function LessonSetup({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
-      <div className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4 sm:p-6">
+      <div className="max-w-xl mx-auto">
         <button
           onClick={onBack}
-          className="mb-6 text-white hover:text-gray-200 flex items-center gap-2"
+          className="mb-4 text-white hover:text-gray-200 flex items-center gap-2 text-sm sm:text-base"
         >
           ← Повернутися назад
         </button>
 
-        <div className="card mb-8">
-          <h1 className="text-3xl font-bold mb-2">{lesson.title}</h1>
-          <p className="text-gray-600 mb-4">{lesson.description}</p>
-          <p className="text-gray-500">Слів в уроці: {words.length}</p>
+        <div className="card mb-4 sm:mb-6 p-5 sm:p-6">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">{lesson.title}</h1>
+          {lesson.description && (
+            <p className="text-gray-600 mb-3 text-sm sm:text-base">{lesson.description}</p>
+          )}
+          <p className="text-gray-500 text-sm">Слів в уроці: {words.length}</p>
         </div>
 
-        <div className="card space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Налаштування навчання</h2>
+        <div className="card p-4 sm:p-6 space-y-5">
+          <div className="space-y-1">
+            <h2 className="text-lg sm:text-xl font-semibold">Налаштування</h2>
+            <p className="text-sm text-gray-600">Обери напрямок і порядок показу карток</p>
           </div>
 
-          <div className="space-y-3">
-            <p className="text-sm font-medium text-gray-700">Напрямок мов навчання</p>
-            <div className="grid sm:grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-gray-700">Напрямок мов</p>
+            <div className="rounded-2xl bg-gray-100 p-1 grid grid-cols-1 sm:grid-cols-2 gap-1">
               <button
                 type="button"
                 onClick={() => setIsJapaneseFirst(true)}
-                className={`rounded-xl border-2 p-4 text-left transition ${
+                className={`rounded-xl px-4 py-3 text-sm sm:text-base font-medium text-left transition ${
                   isJapaneseFirst
-                    ? 'border-blue-500 bg-blue-50 shadow-sm'
-                    : 'border-gray-200 bg-white hover:border-blue-200'
+                    ? 'bg-white text-blue-700 shadow-sm'
+                    : 'text-gray-700 hover:bg-white/70'
                 }`}
               >
-                <p className="text-lg font-semibold">日本語 → 🇺🇦 Українська</p>
-                <p className="text-sm text-gray-600 mt-1">Спочатку бачиш японське слово</p>
+                <div>日本語 → 🇺🇦 Українська</div>
+                <div className="mt-1 text-xs font-normal text-gray-500">Спочатку японське слово</div>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsJapaneseFirst(false)}
-                className={`rounded-xl border-2 p-4 text-left transition ${
+                className={`rounded-xl px-4 py-3 text-sm sm:text-base font-medium text-left transition ${
                   !isJapaneseFirst
-                    ? 'border-purple-500 bg-purple-50 shadow-sm'
-                    : 'border-gray-200 bg-white hover:border-purple-200'
+                    ? 'bg-white text-purple-700 shadow-sm'
+                    : 'text-gray-700 hover:bg-white/70'
                 }`}
               >
-                <p className="text-lg font-semibold">🇺🇦 Українська → 日本語</p>
-                <p className="text-sm text-gray-600 mt-1">Спочатку бачиш український переклад</p>
+                <div>🇺🇦 Українська → 日本語</div>
+                <div className="mt-1 text-xs font-normal text-gray-500">Спочатку переклад</div>
               </button>
             </div>
           </div>
 
-          <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-200 p-4">
-            <div>
-              <p className="font-medium text-gray-900">Випадкова послідовність</p>
-              <p className="text-sm text-gray-600 mt-1">
-                {isRandom ? 'Картки будуть перемішані перед стартом' : 'Картки підуть у порядку додавання'}
+          <div className="rounded-2xl border border-gray-200 px-4 py-3 flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="font-medium text-gray-900 text-sm sm:text-base">Випадкова послідовність</p>
+              <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                {isRandom ? 'Картки будуть перемішані' : 'Картки підуть по черзі'}
               </p>
             </div>
 
@@ -104,7 +107,7 @@ export default function LessonSetup({
             </button>
           </div>
 
-          <button onClick={handleStart} className="btn-primary w-full text-lg py-3">
+          <button onClick={handleStart} className="btn-primary w-full text-base sm:text-lg py-3">
             Почати
           </button>
         </div>
