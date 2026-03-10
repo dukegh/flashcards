@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import Modal from '@/components/UI/Modal'
 
 export default function AuthForm() {
   const [email, setEmail] = useState('')
@@ -12,6 +13,7 @@ export default function AuthForm() {
   const [isSignUp, setIsSignUp] = useState(false)
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
   const [settingsLoading, setSettingsLoading] = useState(true)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -54,7 +56,7 @@ export default function AuthForm() {
         })
         if (error) throw error
         setError(null)
-        alert('Перевірте вашу пошту для підтвердження!')
+        setSuccessMessage('Перевірте вашу пошту для підтвердження!')
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -72,6 +74,23 @@ export default function AuthForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4">
+      <Modal
+        isOpen={!!successMessage}
+        title="Готово"
+        onClose={() => setSuccessMessage(null)}
+        actions={
+          <button
+            type="button"
+            onClick={() => setSuccessMessage(null)}
+            className="btn-primary w-full"
+          >
+            Зрозуміло
+          </button>
+        }
+      >
+        <p>{successMessage}</p>
+      </Modal>
+
       <div className="card w-full max-w-md">
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Flash Cards 📚

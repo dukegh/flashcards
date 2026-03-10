@@ -6,6 +6,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { Lesson, Word } from '@/types'
 import LessonForm from '@/components/Lessons/LessonForm'
 import WordForm from '@/components/Lessons/WordForm'
+import Modal from '@/components/UI/Modal'
 
 type EditMode = 'lesson' | 'words' | 'newWord'
 
@@ -20,6 +21,8 @@ export default function EditLessonPage() {
   const [editingWord, setEditingWord] = useState<Word | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [statusModal, setStatusModal] = useState<{ title: string; message: string } | null>(null)
+  const [wordToDelete, setWordToDelete] = useState<string | null>(null)
 
   const supabase = createClient()
 
@@ -72,7 +75,7 @@ export default function EditLessonPage() {
       
       setLesson(prev => prev ? { ...prev, ...data } : null)
       setEditMode('words')
-      alert('Урок оновлено!')
+      setStatusModal({ title: 'Готово', message: 'Урок оновлено.' })
     } catch (error: any) {
       throw new Error(error.message || 'Помилка при оновленні')
     } finally {
@@ -97,7 +100,7 @@ export default function EditLessonPage() {
       
       await loadLesson()
       setEditMode('words')
-      alert('Слово додано!')
+      setStatusModal({ title: 'Готово', message: 'Слово додано.' })
     } catch (error: any) {
       throw new Error(error.message || 'Помилка при додаванні слова')
     } finally {
@@ -126,7 +129,7 @@ export default function EditLessonPage() {
       await loadLesson()
       setEditingWord(null)
       setEditMode('words')
-      alert('Слово оновлено!')
+      setStatusModal({ title: 'Готово', message: 'Слово оновлено.' })
     } catch (error: any) {
       throw new Error(error.message || 'Помилка при оновленні слова')
     } finally {
@@ -135,8 +138,7 @@ export default function EditLessonPage() {
   }
 
   const handleWordDelete = async (wordId: string) => {
-    if (!confirm('Ви впевнені? Це дію неможливо скасувати.')) return
-    
+    setIsSaving(true)
     try {
       const { error } = await supabase
         .from('words')
@@ -144,11 +146,14 @@ export default function EditLessonPage() {
         .eq('id', wordId)
 
       if (error) throw error
-      
+
       await loadLesson()
-      alert('Слово видалено!')
+      setWordToDelete(null)
+      setStatusModal({ title: 'Готово', message: 'Слово видалено.' })
     } catch (error: any) {
-      alert('Помилка при видаленні: ' + error.message)
+      setStatusModal({ title: 'Помилка', message: error.message || 'Не вдалося видалити слово.' })
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -162,6 +167,51 @@ export default function EditLessonPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
+      <Modal
+        isOpen={!!statusModal}
+        title={statusModal?.title || ''}
+        onClose={() => setStatusModal(null)}
+        actions={
+          <button
+            type="button"
+            onClick={() => setStatusModal(null)}
+            className="btn-primary w-full"
+          >
+            OK
+          </button>
+        }
+      >
+        <p>{statusModal?.message}</p>
+      </Modal>
+
+      <Modal
+        isOpen={!!wordToDelete}
+        title="Видалити слово?"
+        onClose={isSaving ? undefined : () => setWordToDelete(null)}
+        actions={
+          <>
+            <button
+              type="button"
+              onClick={() => setWordToDelete(null)}
+              disabled={isSaving}
+              className="btn-secondary flex-1"
+            >
+              Скасувати
+            </button>
+            <button
+              type="button"
+              onClick={() => wordToDelete && handleWordDelete(wordToDelete)}
+              disabled={isSaving}
+              className="btn-danger flex-1"
+            >
+              Видалити
+            </button>
+          </>
+        }
+      >
+        <p>Цю дію неможливо скасувати.</p>
+      </Modal>
+
       <div className="max-w-4xl mx-auto">
         <button
           onClick={() => router.push('/dashboard')}
@@ -259,7 +309,7 @@ export default function EditLessonPage() {
                         ✏️ Редагувати
                       </button>
                       <button
-                        onClick={() => handleWordDelete(word.id)}
+                        onClick={() => setWordToDelete(word.id)}
                         className="btn-danger flex-1 py-2 text-sm"
                       >
                         🗑️ Видалити

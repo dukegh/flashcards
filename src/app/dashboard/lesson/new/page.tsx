@@ -4,10 +4,12 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import LessonForm from '@/components/Lessons/LessonForm'
+import Modal from '@/components/UI/Modal'
 
 export default function NewLessonPage() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [resultModal, setResultModal] = useState<{ title: string; message: string; redirectTo: string } | null>(null)
   const supabase = createClient()
 
   const handleCreateLesson = async (data: any) => {
@@ -40,13 +42,19 @@ export default function NewLessonPage() {
 
       if (!newLesson) {
         console.error('No lesson returned from insert')
-        alert('Урок створено! Повертаємось до уроків...')
-        setTimeout(() => router.push('/dashboard'), 500)
+        setResultModal({
+          title: 'Урок створено',
+          message: 'Урок створено. Повертаємось до списку уроків.',
+          redirectTo: '/dashboard',
+        })
         return
       }
 
-      alert('Урок створено! Тепер додайте слова.')
-      setTimeout(() => router.push(`/dashboard/lesson/${newLesson.id}/edit`), 500)
+      setResultModal({
+        title: 'Урок створено',
+        message: 'Урок створено! Тепер додайте слова.',
+        redirectTo: `/dashboard/lesson/${newLesson.id}/edit`,
+      })
     } catch (error: any) {
       console.error('Create lesson error:', error)
       throw new Error(error.message || 'Помилка при створенні уроку')
@@ -57,6 +65,26 @@ export default function NewLessonPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
+      <Modal
+        isOpen={!!resultModal}
+        title={resultModal?.title || ''}
+        actions={
+          <button
+            type="button"
+            onClick={() => {
+              if (resultModal) {
+                router.push(resultModal.redirectTo)
+              }
+            }}
+            className="btn-primary w-full"
+          >
+            Продовжити
+          </button>
+        }
+      >
+        <p>{resultModal?.message}</p>
+      </Modal>
+
       <div className="max-w-2xl mx-auto">
         <button
           onClick={() => router.push('/dashboard')}

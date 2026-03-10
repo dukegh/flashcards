@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import { Lesson } from '@/types'
+import Modal from '@/components/UI/Modal'
 
 export default function Dashboard() {
   const [lessons, setLessons] = useState<Lesson[]>([])
@@ -12,6 +13,7 @@ export default function Dashboard() {
   const [wordCounts, setWordCounts] = useState<Record<string, number>>({})
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [statusModal, setStatusModal] = useState<{ title: string; message: string } | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -103,10 +105,10 @@ export default function Dashboard() {
       // Remove from local state
       setLessons(lessons.filter(l => l.id !== lessonId))
       setDeleteConfirmId(null)
-      alert('Урок видалено')
+      setStatusModal({ title: 'Готово', message: 'Урок видалено.' })
     } catch (error: any) {
       console.error('Error deleting lesson:', error)
-      alert(`Помилка: ${error.message}`)
+      setStatusModal({ title: 'Помилка', message: error.message || 'Не вдалося видалити урок.' })
     } finally {
       setIsDeleting(false)
     }
@@ -122,6 +124,23 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
+      <Modal
+        isOpen={!!statusModal}
+        title={statusModal?.title || ''}
+        onClose={() => setStatusModal(null)}
+        actions={
+          <button
+            type="button"
+            onClick={() => setStatusModal(null)}
+            className="btn-primary flex-1"
+          >
+            OK
+          </button>
+        }
+      >
+        <p>{statusModal?.message}</p>
+      </Modal>
+
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
@@ -207,34 +226,31 @@ export default function Dashboard() {
         )}
 
         {/* Delete Confirmation Modal */}
-        {deleteConfirmId && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg shadow-lg max-w-sm mx-auto p-6">
-              <h2 className="text-2xl font-bold mb-4 text-gray-800">
-                Видалити урок?
-              </h2>
-              <p className="text-gray-600 mb-6">
-                Це видалить урок та всі картки в ньому. Цю дію неможливо повернути.
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setDeleteConfirmId(null)}
-                  disabled={isDeleting}
-                  className="btn-secondary flex-1 py-2"
-                >
-                  Скасувати
-                </button>
-                <button
-                  onClick={() => handleDeleteLesson(deleteConfirmId)}
-                  disabled={isDeleting}
-                  className="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white font-bold py-2 px-4 rounded flex-1"
-                >
-                  {isDeleting ? 'Видалення...' : '🗑️ Видалити'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <Modal
+          isOpen={!!deleteConfirmId}
+          title="Видалити урок?"
+          onClose={isDeleting ? undefined : () => setDeleteConfirmId(null)}
+          actions={
+            <>
+              <button
+                onClick={() => setDeleteConfirmId(null)}
+                disabled={isDeleting}
+                className="btn-secondary flex-1 py-2"
+              >
+                Скасувати
+              </button>
+              <button
+                onClick={() => deleteConfirmId && handleDeleteLesson(deleteConfirmId)}
+                disabled={isDeleting}
+                className="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white font-bold py-2 px-4 rounded flex-1"
+              >
+                {isDeleting ? 'Видалення...' : '🗑️ Видалити'}
+              </button>
+            </>
+          }
+        >
+          <p>Це видалить урок та всі картки в ньому. Цю дію неможливо повернути.</p>
+        </Modal>
       </div>
     </div>
   )
