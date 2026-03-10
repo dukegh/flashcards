@@ -9,6 +9,7 @@ interface LessonSetupProps {
   onStart: (config: {
     isJapaneseFirst: boolean
     isRandom: boolean
+    showFurigana: boolean
   }) => void
   onBack: () => void
 }
@@ -21,9 +22,10 @@ export default function LessonSetup({
 }: LessonSetupProps) {
   const [isJapaneseFirst, setIsJapaneseFirst] = useState(true)
   const [isRandom, setIsRandom] = useState(false)
+  const [showFurigana, setShowFurigana] = useState(false)
 
   const handleStart = () => {
-    onStart({ isJapaneseFirst, isRandom })
+    onStart({ isJapaneseFirst, isRandom, showFurigana })
   }
 
   return (
@@ -102,6 +104,34 @@ export default function LessonSetup({
               <span
                 className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
                   isRandom ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className="rounded-2xl border border-gray-200 px-4 py-3 flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="font-medium text-gray-900 text-sm sm:text-base">Показати фурігану</p>
+              <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                {showFurigana
+                  ? 'На стороні відповіді буде показано фурігану'
+                  : 'Фурігана прихована під час вивчення'}
+              </p>
+            </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={showFurigana}
+              aria-label="Перемкнути показ фурігани"
+              onClick={() => setShowFurigana(prev => !prev)}
+              className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition ${
+                showFurigana ? 'bg-green-500' : 'bg-gray-300'
+              }`}
+            >
+              <span
+                className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
+                  showFurigana ? 'translate-x-6' : 'translate-x-1'
                 }`}
               />
             </button>

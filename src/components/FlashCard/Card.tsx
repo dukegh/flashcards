@@ -6,14 +6,14 @@ import { Word } from '@/types'
 interface CardProps {
   word: Word
   isJapaneseFirst: boolean
+  showFurigana: boolean
   onCorrect: () => void
   onIncorrect: () => void
 }
 
-export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: CardProps) {
+export default function Card({ word, isJapaneseFirst, showFurigana, onCorrect, onIncorrect }: CardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
 
-  // Reset flip state when word changes
   useEffect(() => {
     setIsFlipped(false)
   }, [word.id])
@@ -25,7 +25,6 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
 
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col flex-1">
-      {/* Card */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
         className="cursor-pointer perspective flex-1 flex flex-col"
@@ -42,6 +41,12 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
               <div className="text-center">
                 <p className="text-sm opacity-75 mb-4">{backLabel}</p>
                 <p className="text-4xl font-bold">{back}</p>
+                {showFurigana && word.furigana && (
+                  <div className="mt-5">
+                    <p className="text-xs uppercase tracking-wide opacity-70 mb-1">Фурігана</p>
+                    <p className="text-xl font-medium text-blue-100">{word.furigana}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -52,7 +57,6 @@ export default function Card({ word, isJapaneseFirst, onCorrect, onIncorrect }: 
         Натисніть на карточку щоб перевернути
       </p>
 
-      {/* Buttons */}
       <div className="flex gap-3 justify-center flex-shrink-0">
         <button
           onClick={onIncorrect}

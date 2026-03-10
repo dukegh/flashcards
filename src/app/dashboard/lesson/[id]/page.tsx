@@ -22,6 +22,7 @@ export default function LessonPage() {
   const [view, setView] = useState<View>('setup')
   const [isJapaneseFirst, setIsJapaneseFirst] = useState(true)
   const [isRandom, setIsRandom] = useState(false)
+  const [showFurigana, setShowFurigana] = useState(false)
   const [stats, setStats] = useState<LessonStats | null>(null)
   const [cardStats, setCardStats] = useState<Record<string, boolean>>({})
   const [startTime, setStartTime] = useState<number>(0)
@@ -64,9 +65,11 @@ export default function LessonPage() {
   const handleStartLesson = async (config: {
     isJapaneseFirst: boolean
     isRandom: boolean
+    showFurigana: boolean
   }) => {
     setIsJapaneseFirst(config.isJapaneseFirst)
     setIsRandom(config.isRandom)
+    setShowFurigana(config.showFurigana)
 
     let orderedWords = [...allWords]
     if (config.isRandom) {
@@ -207,6 +210,7 @@ export default function LessonPage() {
               <Card
                 word={studyWords[currentCardIndex]}
                 isJapaneseFirst={isJapaneseFirst}
+                showFurigana={showFurigana}
                 onCorrect={handleCorrect}
                 onIncorrect={handleIncorrect}
               />
@@ -219,7 +223,7 @@ export default function LessonPage() {
         <Results
           stats={stats}
           incorrectWords={studyWords.filter(word => cardStats[word.id] === false)}
-          onRetry={() => handleStartLesson({ isJapaneseFirst, isRandom })}
+          onRetry={() => handleStartLesson({ isJapaneseFirst, isRandom, showFurigana })}
           onRepeatIncorrect={() => {
             const incorrectWords = studyWords.filter(word => cardStats[word.id] === false)
             setStudyWords(incorrectWords)
