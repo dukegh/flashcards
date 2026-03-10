@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Lesson, Word } from '@/types'
 
 interface LessonSetupProps {
@@ -18,7 +19,10 @@ export default function LessonSetup({
   onStart,
   onBack,
 }: LessonSetupProps) {
-  const handleStart = (isJapaneseFirst: boolean, isRandom: boolean) => {
+  const [isJapaneseFirst, setIsJapaneseFirst] = useState(true)
+  const [isRandom, setIsRandom] = useState(false)
+
+  const handleStart = () => {
     onStart({ isJapaneseFirst, isRandom })
   }
 
@@ -38,65 +42,70 @@ export default function LessonSetup({
           <p className="text-gray-500">Слів в уроці: {words.length}</p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Japanese → Ukrainian */}
-          <button
-            onClick={() => handleStart(true, false)}
-            className="card group hover:shadow-xl"
-          >
-            <div className="text-center">
-              <p className="text-5xl mb-4">日本語 →</p>
-              <p className="text-2xl mb-6">🇺🇦 Українська</p>
-              <p className="text-gray-600 mb-4">Послідовний порядок</p>
-              <span className="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg group-hover:bg-blue-600">
-                Почати
-              </span>
-            </div>
-          </button>
+        <div className="card space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold mb-4">Налаштування навчання</h2>
+          </div>
 
-          {/* Ukrainian → Japanese */}
-          <button
-            onClick={() => handleStart(false, false)}
-            className="card group hover:shadow-xl"
-          >
-            <div className="text-center">
-              <p className="text-5xl mb-4">🇺🇦 Українська →</p>
-              <p className="text-2xl mb-6">日本語</p>
-              <p className="text-gray-600 mb-4">Послідовний порядок</p>
-              <span className="inline-block bg-purple-500 text-white px-4 py-2 rounded-lg group-hover:bg-purple-600">
-                Почати
-              </span>
-            </div>
-          </button>
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-gray-700">Напрямок мов навчання</p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setIsJapaneseFirst(true)}
+                className={`rounded-xl border-2 p-4 text-left transition ${
+                  isJapaneseFirst
+                    ? 'border-blue-500 bg-blue-50 shadow-sm'
+                    : 'border-gray-200 bg-white hover:border-blue-200'
+                }`}
+              >
+                <p className="text-lg font-semibold">日本語 → 🇺🇦 Українська</p>
+                <p className="text-sm text-gray-600 mt-1">Спочатку бачиш японське слово</p>
+              </button>
 
-          {/* Japanese → Ukrainian (Random) */}
-          <button
-            onClick={() => handleStart(true, true)}
-            className="card group hover:shadow-xl"
-          >
-            <div className="text-center">
-              <p className="text-5xl mb-4">日本語 →</p>
-              <p className="text-2xl mb-6">🇺🇦 Українська</p>
-              <p className="text-gray-600 mb-4">Випадковий порядок 🎲</p>
-              <span className="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg group-hover:bg-blue-600">
-                Почати
-              </span>
+              <button
+                type="button"
+                onClick={() => setIsJapaneseFirst(false)}
+                className={`rounded-xl border-2 p-4 text-left transition ${
+                  !isJapaneseFirst
+                    ? 'border-purple-500 bg-purple-50 shadow-sm'
+                    : 'border-gray-200 bg-white hover:border-purple-200'
+                }`}
+              >
+                <p className="text-lg font-semibold">🇺🇦 Українська → 日本語</p>
+                <p className="text-sm text-gray-600 mt-1">Спочатку бачиш український переклад</p>
+              </button>
             </div>
-          </button>
+          </div>
 
-          {/* Ukrainian → Japanese (Random) */}
-          <button
-            onClick={() => handleStart(false, true)}
-            className="card group hover:shadow-xl"
-          >
-            <div className="text-center">
-              <p className="text-5xl mb-4">🇺🇦 Українська →</p>
-              <p className="text-2xl mb-6">日本語</p>
-              <p className="text-gray-600 mb-4">Випадковий порядок 🎲</p>
-              <span className="inline-block bg-purple-500 text-white px-4 py-2 rounded-lg group-hover:bg-purple-600">
-                Почати
-              </span>
+          <div className="flex items-start justify-between gap-4 rounded-xl border border-gray-200 p-4">
+            <div>
+              <p className="font-medium text-gray-900">Випадкова послідовність</p>
+              <p className="text-sm text-gray-600 mt-1">
+                {isRandom ? 'Картки будуть перемішані перед стартом' : 'Картки підуть у порядку додавання'}
+              </p>
             </div>
+
+            <button
+              type="button"
+              role="switch"
+              aria-checked={isRandom}
+              aria-label="Перемкнути випадкову послідовність"
+              onClick={() => setIsRandom(prev => !prev)}
+              className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition ${
+                isRandom ? 'bg-green-500' : 'bg-gray-300'
+              }`}
+            >
+              <span
+                className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
+                  isRandom ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          <button onClick={handleStart} className="btn-primary w-full text-lg py-3">
+            Почати
           </button>
         </div>
       </div>

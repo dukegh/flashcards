@@ -16,7 +16,8 @@ export default function LessonPage() {
   const lessonId = params.id as string
 
   const [lesson, setLesson] = useState<Lesson | null>(null)
-  const [words, setWords] = useState<Word[]>([])
+  const [allWords, setAllWords] = useState<Word[]>([])
+  const [studyWords, setStudyWords] = useState<Word[]>([])
   const [currentCardIndex, setCurrentCardIndex] = useState(0)
   const [view, setView] = useState<View>('setup')
   const [isJapaneseFirst, setIsJapaneseFirst] = useState(true)
@@ -49,7 +50,9 @@ export default function LessonPage() {
         .eq('lesson_id', lessonId)
 
       if (wordsError) throw wordsError
-      setWords(wordsData || [])
+      const loadedWords = wordsData || []
+      setAllWords(loadedWords)
+      setStudyWords(loadedWords)
     } catch (error) {
       console.error('Error loading lesson:', error)
       router.push('/dashboard')
@@ -64,13 +67,13 @@ export default function LessonPage() {
   }) => {
     setIsJapaneseFirst(config.isJapaneseFirst)
     setIsRandom(config.isRandom)
-    
-    let orderedWords = [...words]
+
+    let orderedWords = [...allWords]
     if (config.isRandom) {
       orderedWords = orderedWords.sort(() => Math.random() - 0.5)
     }
-    
-    setWords(orderedWords)
+
+    setStudyWords(orderedWords)
     setCardStats({})
     setCurrentCardIndex(0)
     setStartTime(Date.now())
@@ -78,27 +81,27 @@ export default function LessonPage() {
   }
 
   const handleCorrect = () => {
-    const currentWord = words[currentCardIndex]
+    const currentWord = studyWords[currentCardIndex]
     const newStats = {
       ...cardStats,
-      [currentWord.id]: true // true = correct
+      [currentWord.id]: true
     }
     setCardStats(newStats)
     nextCard(currentCardIndex, newStats)
   }
 
   const handleIncorrect = () => {
-    const currentWord = words[currentCardIndex]
+    const currentWord = studyWords[currentCardIndex]
     const newStats = {
       ...cardStats,
-      [currentWord.id]: false // false = incorrect
+      [currentWord.id]: false
     }
     setCardStats(newStats)
     nextCard(currentCardIndex, newStats)
   }
 
   const nextCard = (currentIndex: number = currentCardIndex, stats: Record<string, boolean> = cardStats) => {
-    if (currentIndex < words.length - 1) {
+    if (currentIndex < studyWords.length - 1) {
       setCurrentCardIndex(currentIndex + 1)
     } else {
       finishLesson(stats)
@@ -109,14 +112,14 @@ export default function LessonPage() {
     const correctCount = Object.values(stats).filter(result => result === true).length
     const incorrectCount = Object.values(stats).filter(result => result === false).length
     const totalAttempts = correctCount + incorrectCount
-    const accuracy = totalAttempts > 0 
-      ? (correctCount / totalAttempts) * 100 
+    const accuracy = totalAttempts > 0
+      ? (correctCount / totalAttempts) * 100
       : 0
 
     const duration = Math.round((Date.now() - startTime) / 1000)
 
     setStats({
-      totalCards: words.length,
+      totalCards: studyWords.length,
       correctAnswers: correctCount,
       incorrectAnswers: incorrectCount,
       accuracy,
@@ -135,7 +138,7 @@ export default function LessonPage() {
     )
   }
 
-  if (!lesson || words.length === 0) {
+  if (!lesson || allWords.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 p-4">
         <div className="max-w-2xl mx-auto card text-center py-12">
@@ -156,7 +159,7 @@ export default function LessonPage() {
       {view === 'setup' && (
         <LessonSetup
           lesson={lesson}
-          words={words}
+          words={allWords}
           onStart={handleStartLesson}
           onBack={() => router.push('/dashboard')}
         />
@@ -180,7 +183,7 @@ export default function LessonPage() {
                   <div>
                     <span className="opacity-75 text-sm">Прогрес:</span>
                     <span className="ml-2 font-bold text-base">
-                      {currentCardIndex + 1}/{words.length}
+                      {currentCardIndex + 1}/{studyWords.length}
                     </span>
                   </div>
                   <div>
@@ -202,7 +205,7 @@ export default function LessonPage() {
 
             <div className="flex-1 flex flex-col">
               <Card
-                word={words[currentCardIndex]}
+                word={studyWords[currentCardIndex]}
                 isJapaneseFirst={isJapaneseFirst}
                 onCorrect={handleCorrect}
                 onIncorrect={handleIncorrect}
@@ -215,11 +218,11 @@ export default function LessonPage() {
       {view === 'results' && stats && (
         <Results
           stats={stats}
-          incorrectWords={words.filter(word => cardStats[word.id] === false)}
+          incorrectWords={studyWords.filter(word => cardStats[word.id] === false)}
           onRetry={() => handleStartLesson({ isJapaneseFirst, isRandom })}
           onRepeatIncorrect={() => {
-            const incorrectWords = words.filter(word => cardStats[word.id] === false)
-            setWords(incorrectWords)
+            const incorrectWords = studyWords.filter(word => cardStats[word.id] === false)
+            setStudyWords(incorrectWords)
             setCardStats({})
             setCurrentCardIndex(0)
             setStartTime(Date.now())
